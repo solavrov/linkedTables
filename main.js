@@ -23,13 +23,9 @@ function sc(row) {
 ct.link(st1, cs1, sc);
 ct.link(st2, cs2, sc);
 
-st1.appendRow(["SBER", 30]);
-st1.appendRow(["GAZP", 50]);
-
-st2.appendRow(["APPL", 100]);
-st2.appendRow(["MSFT", 200]);
-
-ct.appendRow(["LKOH", 100, 200], "st1");
+st1.appendMatrix([["SBER", 30], ["GAZP", 50]]);
+st2.appendMatrix([["APPL", 100], ["MSFT", 200]]);
+ct.appendMatrix([["LKOH", 100, 200], ["TSLA", 1000, 2000]], ["st1", "st2"]);
 
 
 let box1 = document.getElementById("box1");
