@@ -56,5 +56,11 @@ class CentralTable extends SideTable {
         });
     }
 
+    appendMatrix(matrix, ownerNames) {
+        for (let i = 0; i < matrix.length; i++) {
+            this.appendRow(matrix[i], ownerNames[i]);
+        }
+    }
+
 }
 
