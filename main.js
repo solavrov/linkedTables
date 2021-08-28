@@ -27,14 +27,29 @@ st1.appendMatrix([["SBER", 30], ["GAZP", 50]]);
 st2.appendMatrix([["APPL", 100], ["MSFT", 200]]);
 ct.appendMatrix([["LKOH", 100, 200], ["TSLA", 1000, 2000]], ["st1", "st2"]);
 
+function sumOfCol(matrix, indexOfCol) {
+    let s = 0;
+    for (let j = 1; j < matrix.length; j++) {
+        s += matrix[j][indexOfCol];
+    }
+    return s;
+}
+
+function summarize(matrix) {
+    return ["TOTAL", "", sumOfCol(matrix, 2)];
+}
+
+ct.addSummary(summarize);
+
 
 let box1 = document.getElementById("box1");
 let box2 = document.getElementById("box2");
 let box3 = document.getElementById("box3");
 
-
 box1.appendChild(st1.table);
 box2.appendChild(st2.table);
 box3.appendChild(ct.table);
+
+
 
 

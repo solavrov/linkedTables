@@ -4,10 +4,11 @@ export {CentralTable};
 
 class CentralTable extends SideTable {
     constructor(headerArray, cssClass, caption="", actionSymbol="&#10006;", blankSymbol="&#9586;") {
-        super(headerArray, "Central", cssClass, caption, actionSymbol, blankSymbol)
+        super(headerArray, "Center", cssClass, caption, actionSymbol, blankSymbol)
         this.sideTables = {};
         this.adapters = {};
         this.rowOwnerNames = [null];
+        this.summarize = null;
     }
 
     link(tableObject, CenterToSideAdapter, SideToCenterAdapter) {
@@ -17,19 +18,47 @@ class CentralTable extends SideTable {
         tableObject.adapter = SideToCenterAdapter;
     }
 
+    addSummary(summarize) {
+        this.summarize = summarize;
+        let sumRow = summarize(this.matrix);
+
+        let row = this.table.insertRow();
+        let cell = row.insertCell(0);
+        cell.innerHTML = "";
+        for (let i = 0; i < sumRow.length; i++) {
+            cell = row.insertCell(i + 1);
+            cell.innerHTML = sumRow[i];
+        }
+    }
+
+    refreshSummary() {
+        if (this.summarize !== null) {
+            let sumRow = this.summarize(this.matrix);
+            for (let i = 0; i < sumRow.length; i++) {
+                this.table.rows[this.matrix.length].cells[i + 1].innerHTML = sumRow[i];
+            }
+        }
+    }
+
     moveRow(rowIndex) {
         let name = this.rowOwnerNames[rowIndex];
         this.sideTables[name].appendRow(this.adapters[name](this.matrix[rowIndex]));
         this.matrix.splice(rowIndex, 1);
         this.rowOwnerNames.splice(rowIndex, 1);
         this.table.deleteRow(rowIndex);
+        this.refreshSummary();
     }
 
     appendRow(rowArray, ownerName) {
         this.matrix.push(rowArray);
         this.rowOwnerNames.push(ownerName);
 
-        let row = this.table.insertRow();
+        let row;
+        if (this.summarize !== null) {
+            row = this.table.insertRow(this.matrix.length - 1);
+        } else {
+            row = this.table.insertRow();
+        }
         let cell = row.insertCell(0);
         cell.id = rowArray[0];
         cell.style.cursor = "pointer";
@@ -40,6 +69,7 @@ class CentralTable extends SideTable {
             cell = row.insertCell(i + 1);
             cell.innerHTML = rowArray[i];
         }
+        this.refreshSummary();
 
         let t = this;
         let handler = function (event) {
