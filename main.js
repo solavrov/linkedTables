@@ -50,6 +50,16 @@ box1.appendChild(st1.table);
 box2.appendChild(st2.table);
 box3.appendChild(ct.table);
 
+function halfCol(matrix, indexOfCol) {
+    for (let j = 1; j < matrix.length; j++) {
+        matrix[j][indexOfCol] /= 2;
+    }
+}
 
+halfCol(st1.matrix, 1);
+st1.syncWithMatrix();
 
+halfCol(ct.matrix, 1);
+halfCol(ct.matrix, 2);
+ct.syncWithMatrix();
 
