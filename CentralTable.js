@@ -40,6 +40,11 @@ class CentralTable extends SideTable {
         }
     }
 
+    syncWithMatrix() {
+        super.syncWithMatrix();
+        this.refreshSummary();
+    }
+
     moveRow(rowIndex) {
         let name = this.rowOwnerNames[rowIndex];
         this.sideTables[name].appendRow(this.adapters[name](this.matrix[rowIndex]));
