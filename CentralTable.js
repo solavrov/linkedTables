@@ -3,12 +3,23 @@ import {SideTable} from "./SideTable.js";
 export {CentralTable};
 
 class CentralTable extends SideTable {
-    constructor(headerArray, cssClass, caption="", actionSymbol="&#10006;", blankSymbol="&#9586;") {
-        super(headerArray, "Center", cssClass, caption, actionSymbol, blankSymbol)
+    constructor(headerArray, cssClassTable, cssClassInput, aligns, inputIndices=[], caption="", actionSymbol="&#10006;", blankSymbol="&#9586;") {
+        super(headerArray, "Center", cssClassTable, aligns, caption, actionSymbol, blankSymbol)
         this.sideTables = {};
         this.adapters = {};
         this.rowOwnerNames = [null];
         this.summarize = null;
+        this.cssClassInput = cssClassInput;
+        this.inputIndices = inputIndices; //indices of matrix count
+
+        let t = this;
+        if (inputIndices.length > 0) {
+            document.addEventListener("keydown", function(event) {
+                if (event["keyCode"] === 13) {
+                    t.syncMatrixWithTable();
+                }
+            });
+        }
     }
 
     link(tableObject, CenterToSideAdapter, SideToCenterAdapter) {
@@ -27,6 +38,7 @@ class CentralTable extends SideTable {
         cell.innerHTML = "";
         for (let i = 0; i < sumRow.length; i++) {
             cell = row.insertCell(i + 1);
+            cell.style.textAlign = this.aligns[i];
             cell.innerHTML = sumRow[i];
         }
     }
@@ -40,8 +52,28 @@ class CentralTable extends SideTable {
         }
     }
 
-    syncWithMatrix() {
-        super.syncWithMatrix();
+    syncTableWithMatrix() {
+        for (let j = 1; j < this.matrix.length; j++) {
+            for (let i = 0; i < this.matrix[j].length; i++) {
+                if (this.inputIndices.includes(i)) {
+                    this.table.rows[j].cells[i + 1].firstElementChild.value = this.matrix[j][i];
+                } else {
+                    this.table.rows[j].cells[i + 1].innerHTML = this.matrix[j][i];
+                }
+            }
+        }
+        this.refreshSummary();
+    }
+
+    syncMatrixWithTable() {
+        for (let j = 1; j < this.matrix.length; j++) {
+            for (let i = 0; i < this.matrix[j].length; i++) {
+                if (this.inputIndices.includes(i)) {
+                    this.table.rows[j].cells[i + 1].firstElementChild.blur();
+                    this.matrix[j][i] = Number(this.table.rows[j].cells[i + 1].firstElementChild.value);
+                }
+            }
+        }
         this.refreshSummary();
     }
 
@@ -72,7 +104,17 @@ class CentralTable extends SideTable {
         cell.innerHTML = this.actionSymbol;
         for (let i = 0; i < rowArray.length; i++) {
             cell = row.insertCell(i + 1);
-            cell.innerHTML = rowArray[i];
+            cell.style.textAlign = this.aligns[i];
+            if (this.inputIndices.includes(i)) {
+                let input = document.createElement("input");
+                input.className = this.cssClassInput;
+                input.maxLength = 7;
+                input.size = 5;
+                input.value = rowArray[i];
+                cell.appendChild(input);
+            } else {
+                cell.innerHTML = rowArray[i];
+            }
         }
         this.refreshSummary();
 

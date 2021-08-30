@@ -1,9 +1,9 @@
 import {SideTable} from "./SideTable.js";
 import {CentralTable} from "./CentralTable.js";
 
-let ct = new CentralTable(["ticker", "price", "double price"], "linked", "Portfolio");
-let st1 = new SideTable(["ticker", "price"], "st1", "linked", "Assets 1", );
-let st2 = new SideTable(["ticker", "price"], "st2", "linked", "Assets 2", );
+let ct = new CentralTable(["ticker", "price", "double price"], "linked", "ct", ["center", "right", "right"],[1], "Portfolio");
+let st1 = new SideTable(["ticker", "price"], "st1", "linked", ["center", "right"], "Assets 1", );
+let st2 = new SideTable(["ticker", "price"], "st2", "linked", ["center", "right"], "Assets 2", );
 
 function cs1(row) {
     row.splice(2, 1);
@@ -36,7 +36,7 @@ function sumOfCol(matrix, indexOfCol) {
 }
 
 function summarize(matrix) {
-    return ["TOTAL", "", sumOfCol(matrix, 2)];
+    return ["TOTAL", sumOfCol(matrix, 1), ""];
 }
 
 ct.addSummary(summarize);
@@ -57,9 +57,11 @@ function halfCol(matrix, indexOfCol) {
 }
 
 halfCol(st1.matrix, 1);
-st1.syncWithMatrix();
+st1.syncTableWithMatrix();
 
 halfCol(ct.matrix, 1);
 halfCol(ct.matrix, 2);
-ct.syncWithMatrix();
+ct.syncTableWithMatrix();
+
+
 

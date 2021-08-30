@@ -1,9 +1,10 @@
 export {SideTable};
 
 class SideTable {
-    constructor(headerArray, name, cssClass, caption = "", actionSymbol = "&#10010;", blankSymbol = "&#9586;") {
+    constructor(headerArray, name, cssClass, aligns, caption="", actionSymbol="&#10010;", blankSymbol="&#9586;") {
         this.matrix = [headerArray];
         this.name = name;
+        this.aligns = aligns;
         this.centerTable = null;
         this.adapter = null;
         this.rowHighLightColor = "LightGrey";
@@ -32,7 +33,7 @@ class SideTable {
         return i;
     }
 
-    syncWithMatrix() {
+    syncTableWithMatrix() {
         for (let j = 1; j < this.matrix.length; j++) {
             for (let i = 0; i < this.matrix[j].length; i++) {
                 this.table.rows[j].cells[i + 1].innerHTML = this.matrix[j][i];
@@ -57,11 +58,11 @@ class SideTable {
         cell.innerHTML = this.actionSymbol;
         for (let i = 0; i < rowArray.length; i++) {
             cell = row.insertCell(i + 1);
+            cell.style.textAlign = this.aligns[i];
             cell.innerHTML = rowArray[i];
         }
 
         let t = this;
-
         let handler = function (event) {
             let i = t.getRowIndex(event.target.id);
             t.moveRow(i);
