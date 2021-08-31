@@ -8,7 +8,8 @@ class CentralTable extends SideTable {
         this.sideTables = {};
         this.adapters = {};
         this.rowOwnerNames = [null];
-        this.summarize = null;
+        this.summarizer = null;
+        this.recalculator = null;
         this.cssClassInput = cssClassInput;
         this.inputIndices = inputIndices; //indices of matrix count
 
@@ -16,7 +17,7 @@ class CentralTable extends SideTable {
         if (inputIndices.length > 0) {
             document.addEventListener("keydown", function(event) {
                 if (event["keyCode"] === 13) {
-                    t.syncMatrixWithTable();
+                    t.refreshWithInput();
                 }
             });
         }
@@ -29,9 +30,9 @@ class CentralTable extends SideTable {
         tableObject.adapter = SideToCenterAdapter;
     }
 
-    addSummary(summarize) {
-        this.summarize = summarize;
-        let sumRow = summarize(this.matrix);
+    addSummary(summarizer) {
+        this.summarizer = summarizer;
+        let sumRow = summarizer(this.matrix);
 
         let row = this.table.insertRow();
         let cell = row.insertCell(0);
@@ -44,8 +45,8 @@ class CentralTable extends SideTable {
     }
 
     refreshSummary() {
-        if (this.summarize !== null) {
-            let sumRow = this.summarize(this.matrix);
+        if (this.summarizer !== null) {
+            let sumRow = this.summarizer(this.matrix);
             for (let i = 0; i < sumRow.length; i++) {
                 this.table.rows[this.matrix.length].cells[i + 1].innerHTML = sumRow[i];
             }
@@ -77,6 +78,18 @@ class CentralTable extends SideTable {
         this.refreshSummary();
     }
 
+    addRecalculator(recalculator) {
+        this.recalculator = recalculator;
+    }
+
+    refreshWithInput() {
+        this.syncMatrixWithTable();
+        if (this.recalculator !== null) {
+            this.matrix = this.recalculator(this.matrix);
+            this.syncTableWithMatrix();
+        }
+    }
+
     moveRow(rowIndex) {
         let name = this.rowOwnerNames[rowIndex];
         this.sideTables[name].appendRow(this.adapters[name](this.matrix[rowIndex]));
@@ -91,7 +104,7 @@ class CentralTable extends SideTable {
         this.rowOwnerNames.push(ownerName);
 
         let row;
-        if (this.summarize !== null) {
+        if (this.summarizer !== null) {
             row = this.table.insertRow(this.matrix.length - 1);
         } else {
             row = this.table.insertRow();
