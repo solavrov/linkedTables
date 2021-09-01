@@ -63,5 +63,15 @@ halfCol(ct.matrix, 1);
 halfCol(ct.matrix, 2);
 ct.syncTableWithMatrix();
 
+function recalculator(matrix) {
+    let m = matrix.map((row) => [...row]);
+    for (let j = 1; j < m.length; j++) {
+        m[j][2] = m[j][1] * 2;
+    }
+    return m;
+}
+
+ct.addRecalculator(recalculator);
+
 
 
