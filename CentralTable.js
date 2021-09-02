@@ -161,20 +161,7 @@ class CentralTable extends SideTable {
             }
         }
         this.refreshSummary();
-
-        let t = this;
-        let handler = function (event) {
-            let i = t.getRowIndex(event.target.id);
-            t.moveRow(i);
-        };
-        row.cells[0].addEventListener("click", handler);
-
-        row.addEventListener("mouseover", function(event) {
-            event.currentTarget.style.backgroundColor = t.rowHighlightColor;
-        });
-        row.addEventListener("mouseout", function(event) {
-            event.currentTarget.style.backgroundColor = "";
-        });
+        this.setRowListeners(row);
     }
 
     appendMatrix(matrix, ownerNames) {

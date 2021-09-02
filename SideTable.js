@@ -61,7 +61,10 @@ class SideTable {
             cell.style.textAlign = this.aligns[i];
             cell.innerHTML = rowArray[i];
         }
+        this.setRowListeners(row);
+    }
 
+    setRowListeners(row) {
         let t = this;
         let handler = function (event) {
             let i = t.getRowIndex(event.target.id);
