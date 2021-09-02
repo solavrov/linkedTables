@@ -3,7 +3,7 @@ import {SideTable} from "./SideTable.js";
 export {CentralTable};
 
 class CentralTable extends SideTable {
-    constructor(headerArray, cssClassTable, cssClassInput, aligns, inputIndices=[], caption="", actionSymbol="&#10006;", blankSymbol="&#9586;") {
+    constructor(headerArray, cssClassTable, cssClassInput, aligns, caption="", actionSymbol="&#10006;", blankSymbol="&#9586;") {
         super(headerArray, "Center", cssClassTable, aligns, caption, actionSymbol, blankSymbol)
         this.sideTables = {};
         this.adapters = {};
@@ -11,7 +11,31 @@ class CentralTable extends SideTable {
         this.summarizer = null;
         this.recalculator = null;
         this.cssClassInput = cssClassInput;
-        this.inputIndices = inputIndices; //indices of matrix count
+        this.inputIndices = []; //indices of matrix count
+    }
+
+    link(tableObject, CenterToSideAdapter, SideToCenterAdapter) {
+        this.sideTables[tableObject.name] = tableObject;
+        this.adapters[tableObject.name] = CenterToSideAdapter;
+        tableObject.centerTable = this;
+        tableObject.adapter = SideToCenterAdapter;
+    }
+
+    addInput(inputIndices) {
+        this.inputIndices = inputIndices;
+
+        for (let i of inputIndices) {
+            for (let j = 1; j < this.matrix.length; j++) {
+                let input = document.createElement("input");
+                let cell = this.table.rows[j].cells[i + 1];
+                input.className = this.cssClassInput;
+                input.maxLength = 7;
+                input.size = 5;
+                input.value = cell.innerHTML;
+                cell.innerHTML = "";
+                cell.appendChild(input);
+            }
+        }
 
         let t = this;
         if (inputIndices.length > 0) {
@@ -23,11 +47,20 @@ class CentralTable extends SideTable {
         }
     }
 
-    link(tableObject, CenterToSideAdapter, SideToCenterAdapter) {
-        this.sideTables[tableObject.name] = tableObject;
-        this.adapters[tableObject.name] = CenterToSideAdapter;
-        tableObject.centerTable = this;
-        tableObject.adapter = SideToCenterAdapter;
+    removeInput(substCol=[]) {
+        for (let i of this.inputIndices) {
+            for (let j = 1; j < this.matrix.length; j++) {
+                let cell = this.table.rows[j].cells[i + 1];
+                let v = cell.lastChild.value;
+                cell.removeChild(cell.lastChild);
+                if (substCol.length === this.matrix.length - 1) {
+                    cell.innerHTML = substCol[j - 1];
+                } else {
+                    cell.innerHTML = v;
+                }
+            }
+        }
+        this.inputIndices = [];
     }
 
     addSummary(summarizer) {
