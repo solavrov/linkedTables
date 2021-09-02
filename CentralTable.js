@@ -170,7 +170,7 @@ class CentralTable extends SideTable {
         row.cells[0].addEventListener("click", handler);
 
         row.addEventListener("mouseover", function(event) {
-            event.currentTarget.style.backgroundColor = t.rowHighLightColor;
+            event.currentTarget.style.backgroundColor = t.rowHighlightColor;
         });
         row.addEventListener("mouseout", function(event) {
             event.currentTarget.style.backgroundColor = "";

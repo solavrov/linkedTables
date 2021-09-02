@@ -7,7 +7,7 @@ class SideTable {
         this.aligns = aligns;
         this.centerTable = null;
         this.adapter = null;
-        this.rowHighLightColor = "LightGrey";
+        this.rowHighlightColor = "#e0ebeb";
         this.actionSymbol = actionSymbol;
 
         this.table = document.createElement("table");
@@ -70,7 +70,7 @@ class SideTable {
         row.cells[0].addEventListener("click", handler);
 
         row.addEventListener("mouseover", function (event) {
-            event.currentTarget.style.backgroundColor = t.rowHighLightColor;
+            event.currentTarget.style.backgroundColor = t.rowHighlightColor;
         });
         row.addEventListener("mouseout", function (event) {
             event.currentTarget.style.backgroundColor = "";
