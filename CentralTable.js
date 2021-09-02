@@ -21,13 +21,13 @@ class CentralTable extends SideTable {
         tableObject.adapter = SideToCenterAdapter;
     }
 
-    addInput(inputIndices) {
-        this.inputIndices = inputIndices;
-
-        for (let i of inputIndices) {
+    addInput(inputIndex) {
+        this.refreshWithInput();
+        if (!this.inputIndices.includes(inputIndex)) {
+            this.inputIndices.push(inputIndex);
             for (let j = 1; j < this.matrix.length; j++) {
                 let input = document.createElement("input");
-                let cell = this.table.rows[j].cells[i + 1];
+                let cell = this.table.rows[j].cells[inputIndex + 1];
                 input.className = this.cssClassInput;
                 input.maxLength = 7;
                 input.size = 5;
@@ -35,10 +35,7 @@ class CentralTable extends SideTable {
                 cell.innerHTML = "";
                 cell.appendChild(input);
             }
-        }
-
-        let t = this;
-        if (inputIndices.length > 0) {
+            let t = this;
             document.addEventListener("keydown", function(event) {
                 if (event["keyCode"] === 13) {
                     t.refreshWithInput();
@@ -47,10 +44,11 @@ class CentralTable extends SideTable {
         }
     }
 
-    removeInput(substCol=[]) {
-        for (let i of this.inputIndices) {
+    removeInput(inputIndex, substCol=[]) {
+        this.refreshWithInput();
+        if (this.inputIndices.includes(inputIndex)) {
             for (let j = 1; j < this.matrix.length; j++) {
-                let cell = this.table.rows[j].cells[i + 1];
+                let cell = this.table.rows[j].cells[inputIndex + 1];
                 let v = cell.lastChild.value;
                 cell.removeChild(cell.lastChild);
                 if (substCol.length === this.matrix.length - 1) {
@@ -59,8 +57,8 @@ class CentralTable extends SideTable {
                     cell.innerHTML = v;
                 }
             }
+            this.inputIndices.splice(this.inputIndices.indexOf(inputIndex), 1);
         }
-        this.inputIndices = [];
     }
 
     addSummary(summarizer) {

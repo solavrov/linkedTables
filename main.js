@@ -74,16 +74,17 @@ function recalculator(matrix) {
 
 ct.addRecalculator(recalculator);
 
+ct.addInput(3);
 
 let i1 = document.getElementById("i1");
 let i2 = document.getElementById("i2");
 
 i2.onclick = function() {
-    ct.addInput([1, 3]);
+    ct.addInput(1);
 }
 
 i1.onclick = function() {
-    ct.removeInput();
+    ct.removeInput(1);
 }
 
 
