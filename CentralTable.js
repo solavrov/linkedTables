@@ -12,6 +12,7 @@ class CentralTable extends SideTable {
         this.recalculator = null;
         this.cssClassInput = cssClassInput;
         this.inputIndices = []; //indices of matrix count
+        this.enterHandler = null;
     }
 
     link(tableObject, CenterToSideAdapter, SideToCenterAdapter) {
@@ -25,6 +26,7 @@ class CentralTable extends SideTable {
         this.refreshWithInput();
         if (!this.inputIndices.includes(inputIndex)) {
             this.inputIndices.push(inputIndex);
+            let t = this;
             for (let j = 1; j < this.matrix.length; j++) {
                 let input = document.createElement("input");
                 let cell = this.table.rows[j].cells[inputIndex + 1];
@@ -34,13 +36,20 @@ class CentralTable extends SideTable {
                 input.value = cell.innerHTML;
                 cell.innerHTML = "";
                 cell.appendChild(input);
-            }
-            let t = this;
-            document.addEventListener("keydown", function(event) {
-                if (event["keyCode"] === 13) {
+                input.addEventListener("blur", function() {
                     t.refreshWithInput();
-                }
-            });
+                });
+            }
+            if (this.enterHandler === null) {
+                let handler = function(event) {
+                    console.log("X");
+                    if (event["keyCode"] === 13) {
+                        t.refreshWithInput();
+                    }
+                };
+                this.enterHandler = handler;
+                document.addEventListener("keydown", handler);
+            }
         }
     }
 
@@ -58,6 +67,10 @@ class CentralTable extends SideTable {
                 }
             }
             this.inputIndices.splice(this.inputIndices.indexOf(inputIndex), 1);
+        }
+        if (this.inputIndices.length === 0) {
+            document.removeEventListener("keydown", this.enterHandler);
+            this.enterHandler = null;
         }
     }
 
@@ -156,6 +169,10 @@ class CentralTable extends SideTable {
                 input.size = 5;
                 input.value = rowArray[i];
                 cell.appendChild(input);
+                let t = this;
+                input.addEventListener("blur", function() {
+                    t.refreshWithInput();
+                });
             } else {
                 cell.innerHTML = rowArray[i];
             }

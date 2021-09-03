@@ -66,7 +66,7 @@ class SideTable {
 
     setRowListeners(row) {
         let t = this;
-        let handler = function (event) {
+        let handler = function(event) {
             let i = t.getRowIndex(event.target.id);
             t.moveRow(i);
         };
