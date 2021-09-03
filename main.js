@@ -74,7 +74,7 @@ function recalculator(matrix) {
 
 ct.addRecalculator(recalculator);
 
-//ct.addInput(3);
+ct.addInput(3);
 
 let i1 = document.getElementById("i1");
 let i2 = document.getElementById("i2");
