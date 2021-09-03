@@ -37,6 +37,7 @@ class CentralTable extends SideTable {
                 cell.innerHTML = "";
                 cell.appendChild(input);
                 input.addEventListener("blur", function() {
+                    console.log("Y");
                     t.refreshWithInput();
                 });
             }
@@ -44,7 +45,8 @@ class CentralTable extends SideTable {
                 let handler = function(event) {
                     console.log("X");
                     if (event["keyCode"] === 13) {
-                        t.refreshWithInput();
+                        //t.refreshWithInput();
+                        t.blurInput();
                     }
                 };
                 this.enterHandler = handler;
@@ -122,6 +124,14 @@ class CentralTable extends SideTable {
         this.refreshSummary();
     }
 
+    blurInput() {
+        for (let i of this.inputIndices) {
+            for (let j = 1; j < this.matrix.length; j++) {
+                this.table.rows[j].cells[i + 1].firstElementChild.blur();
+            }
+        }
+    }
+
     addRecalculator(recalculator) {
         this.recalculator = recalculator;
     }
@@ -171,6 +181,7 @@ class CentralTable extends SideTable {
                 cell.appendChild(input);
                 let t = this;
                 input.addEventListener("blur", function() {
+                    console.log("Y");
                     t.refreshWithInput();
                 });
             } else {
