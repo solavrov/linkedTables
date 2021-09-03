@@ -37,15 +37,12 @@ class CentralTable extends SideTable {
                 cell.innerHTML = "";
                 cell.appendChild(input);
                 input.addEventListener("blur", function() {
-                    console.log("Y");
                     t.refreshWithInput();
                 });
             }
             if (this.enterHandler === null) {
                 let handler = function(event) {
-                    console.log("X");
                     if (event["keyCode"] === 13) {
-                        //t.refreshWithInput();
                         t.blurInput();
                     }
                 };
@@ -181,7 +178,6 @@ class CentralTable extends SideTable {
                 cell.appendChild(input);
                 let t = this;
                 input.addEventListener("blur", function() {
-                    console.log("Y");
                     t.refreshWithInput();
                 });
             } else {
