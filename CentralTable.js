@@ -23,7 +23,6 @@ class CentralTable extends SideTable {
     }
 
     addInput(inputIndex) {
-        this.refreshWithInput();
         if (!this.inputIndices.includes(inputIndex)) {
             this.inputIndices.push(inputIndex);
             let t = this;
@@ -53,7 +52,6 @@ class CentralTable extends SideTable {
     }
 
     removeInput(inputIndex, substCol=[]) {
-        this.refreshWithInput();
         if (this.inputIndices.includes(inputIndex)) {
             for (let j = 1; j < this.matrix.length; j++) {
                 let cell = this.table.rows[j].cells[inputIndex + 1];
@@ -134,6 +132,7 @@ class CentralTable extends SideTable {
     }
 
     refreshWithInput() {
+        console.log("X");
         this.syncMatrixWithTable();
         this.recalculate();
     }
