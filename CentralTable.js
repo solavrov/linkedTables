@@ -73,8 +73,8 @@ class CentralTable extends SideTable {
 
     addSummary(summarizer) {
         this.summarizer = summarizer;
-        let sumRow = summarizer(this.matrix);
-
+        let m = this.matrix.map((row) => [...row]);
+        let sumRow = summarizer(m);
         let row = this.table.insertRow();
         let cell = row.insertCell(0);
         cell.innerHTML = "";
@@ -87,7 +87,8 @@ class CentralTable extends SideTable {
 
     refreshSummary() {
         if (this.summarizer !== null) {
-            let sumRow = this.summarizer(this.matrix);
+            let m = this.matrix.map((row) => [...row]);
+            let sumRow = this.summarizer(m);
             for (let i = 0; i < sumRow.length; i++) {
                 this.table.rows[this.matrix.length].cells[i + 1].innerHTML = sumRow[i];
             }
@@ -104,7 +105,6 @@ class CentralTable extends SideTable {
                 }
             }
         }
-        this.refreshSummary();
     }
 
     syncMatrixWithTable() {
@@ -116,7 +116,6 @@ class CentralTable extends SideTable {
                 }
             }
         }
-        this.refreshSummary();
     }
 
     blurInput() {
@@ -132,21 +131,23 @@ class CentralTable extends SideTable {
     }
 
     refreshWithInput() {
-        console.log("X");
         this.syncMatrixWithTable();
         this.recalculate();
+        this.refreshSummary();
     }
 
     recalculate() {
         if (this.recalculator !== null) {
-            this.matrix = this.recalculator(this.matrix);
+            let m = this.matrix.map((row) => [...row]);
+            this.matrix = this.recalculator(m);
             this.syncTableWithMatrix();
         }
     }
 
     removeRow(rowIndex) {
         let name = this.rowOwnerNames[rowIndex];
-        this.sideTables[name].appendRow(this.adapters[name](this.matrix[rowIndex]));
+        let r = [...this.matrix[rowIndex]];
+        this.sideTables[name].appendRow(this.adapters[name](r));
         this.matrix.splice(rowIndex, 1);
         this.rowOwnerNames.splice(rowIndex, 1);
         this.table.deleteRow(rowIndex);
