@@ -22,6 +22,65 @@ class CentralTable extends SideTable {
         tableObject.adapter = SideToCenterAdapter;
     }
 
+    syncTableWithMatrix() {
+        for (let j = 1; j < this.matrix.length; j++) {
+            for (let i = 0; i < this.matrix[j].length; i++) {
+                if (this.inputIndices.includes(i)) {
+                    this.table.rows[j].cells[i + 1].firstElementChild.value = this.matrix[j][i];
+                } else {
+                    this.table.rows[j].cells[i + 1].innerHTML = this.matrix[j][i];
+                }
+            }
+        }
+    }
+
+    syncMatrixWithTable() {
+        for (let j = 1; j < this.matrix.length; j++) {
+            for (let i = 0; i < this.matrix[j].length; i++) {
+                if (this.inputIndices.includes(i)) {
+                    this.table.rows[j].cells[i + 1].firstElementChild.blur();
+                    this.matrix[j][i] = Number(this.table.rows[j].cells[i + 1].firstElementChild.value);
+                }
+            }
+        }
+    }
+
+    addSummary(summarizer) {
+        this.summarizer = summarizer;
+        let m = this.matrix.map((row) => [...row]);
+        let sumRow = summarizer(m);
+        let row = this.table.insertRow();
+        let cell = row.insertCell(0);
+        cell.innerHTML = "";
+        for (let i = 0; i < sumRow.length; i++) {
+            cell = row.insertCell(i + 1);
+            cell.style.textAlign = this.aligns[i];
+            cell.innerHTML = sumRow[i];
+        }
+    }
+
+    refreshSummary() {
+        if (this.summarizer !== null) {
+            let m = this.matrix.map((row) => [...row]);
+            let sumRow = this.summarizer(m);
+            for (let i = 0; i < sumRow.length; i++) {
+                this.table.rows[this.matrix.length].cells[i + 1].innerHTML = sumRow[i];
+            }
+        }
+    }
+
+    addRecalculator(recalculator) {
+        this.recalculator = recalculator;
+    }
+
+    recalculate() {
+        if (this.recalculator !== null) {
+            let m = this.matrix.map((row) => [...row]);
+            this.matrix = this.recalculator(m);
+            this.syncTableWithMatrix();
+        }
+    }
+
     addInput(inputIndex) {
         if (!this.inputIndices.includes(inputIndex)) {
             this.inputIndices.push(inputIndex);
@@ -71,53 +130,6 @@ class CentralTable extends SideTable {
         }
     }
 
-    addSummary(summarizer) {
-        this.summarizer = summarizer;
-        let m = this.matrix.map((row) => [...row]);
-        let sumRow = summarizer(m);
-        let row = this.table.insertRow();
-        let cell = row.insertCell(0);
-        cell.innerHTML = "";
-        for (let i = 0; i < sumRow.length; i++) {
-            cell = row.insertCell(i + 1);
-            cell.style.textAlign = this.aligns[i];
-            cell.innerHTML = sumRow[i];
-        }
-    }
-
-    refreshSummary() {
-        if (this.summarizer !== null) {
-            let m = this.matrix.map((row) => [...row]);
-            let sumRow = this.summarizer(m);
-            for (let i = 0; i < sumRow.length; i++) {
-                this.table.rows[this.matrix.length].cells[i + 1].innerHTML = sumRow[i];
-            }
-        }
-    }
-
-    syncTableWithMatrix() {
-        for (let j = 1; j < this.matrix.length; j++) {
-            for (let i = 0; i < this.matrix[j].length; i++) {
-                if (this.inputIndices.includes(i)) {
-                    this.table.rows[j].cells[i + 1].firstElementChild.value = this.matrix[j][i];
-                } else {
-                    this.table.rows[j].cells[i + 1].innerHTML = this.matrix[j][i];
-                }
-            }
-        }
-    }
-
-    syncMatrixWithTable() {
-        for (let j = 1; j < this.matrix.length; j++) {
-            for (let i = 0; i < this.matrix[j].length; i++) {
-                if (this.inputIndices.includes(i)) {
-                    this.table.rows[j].cells[i + 1].firstElementChild.blur();
-                    this.matrix[j][i] = Number(this.table.rows[j].cells[i + 1].firstElementChild.value);
-                }
-            }
-        }
-    }
-
     blurInput() {
         for (let i of this.inputIndices) {
             for (let j = 1; j < this.matrix.length; j++) {
@@ -126,22 +138,10 @@ class CentralTable extends SideTable {
         }
     }
 
-    addRecalculator(recalculator) {
-        this.recalculator = recalculator;
-    }
-
     refreshWithInput() {
         this.syncMatrixWithTable();
         this.recalculate();
         this.refreshSummary();
-    }
-
-    recalculate() {
-        if (this.recalculator !== null) {
-            let m = this.matrix.map((row) => [...row]);
-            this.matrix = this.recalculator(m);
-            this.syncTableWithMatrix();
-        }
     }
 
     removeRow(rowIndex) {
