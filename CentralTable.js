@@ -135,18 +135,23 @@ class CentralTable extends SideTable {
 
     refreshWithInput() {
         this.syncMatrixWithTable();
+        this.recalculate();
+    }
+
+    recalculate() {
         if (this.recalculator !== null) {
             this.matrix = this.recalculator(this.matrix);
             this.syncTableWithMatrix();
         }
     }
 
-    moveRow(rowIndex) {
+    removeRow(rowIndex) {
         let name = this.rowOwnerNames[rowIndex];
         this.sideTables[name].appendRow(this.adapters[name](this.matrix[rowIndex]));
         this.matrix.splice(rowIndex, 1);
         this.rowOwnerNames.splice(rowIndex, 1);
         this.table.deleteRow(rowIndex);
+        this.recalculate();
         this.refreshSummary();
     }
 
@@ -184,8 +189,10 @@ class CentralTable extends SideTable {
                 cell.innerHTML = rowArray[i];
             }
         }
-        this.refreshSummary();
         this.setRowListeners(row);
+
+        this.recalculate();
+        this.refreshSummary();
     }
 
     appendMatrix(matrix, ownerNames) {

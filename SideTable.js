@@ -41,7 +41,7 @@ class SideTable {
         }
     }
 
-    moveRow(rowIndex) {
+    removeRow(rowIndex) {
         this.centerTable.appendRow(this.adapter(this.matrix[rowIndex]), this.name);
         this.matrix.splice(rowIndex, 1);
         this.table.deleteRow(rowIndex);
@@ -68,7 +68,7 @@ class SideTable {
         let t = this;
         let handler = function(event) {
             let i = t.getRowIndex(event.target.id);
-            t.moveRow(i);
+            t.removeRow(i);
         };
         row.cells[0].addEventListener("click", handler);
 
